@@ -216,7 +216,7 @@ export function App() {
       )}
       {resetOpen && (
         <Modal title="Сбросить данные" onClose={() => setResetOpen(false)}>
-          <p>Вернутся исходные карты и покупки, а новые пропадут.</p>
+          <p>Вернутся исходные карты и покупки. Новые пропадут.</p>
           <div className="row-actions">
             <button type="button" className="btn btn-ghost" onClick={() => setResetOpen(false)}>
               Отмена
