@@ -24,7 +24,7 @@ const NAV: { id: ViewId; label: string }[] = [
 ]
 
 export function App() {
-  const { reset, issue, ensureSelfToken, pay } = useStore()
+  const { reset, issue, pay } = useStore()
   const [view, setView] = useState<ViewId>('landing')
   const [demoIndex, setDemoIndex] = useState<number | null>(null)
   const [demoPerson, setDemoPerson] = useState<string | null>(null)
@@ -109,11 +109,8 @@ export function App() {
         setDemoReceipt(null)
       }
       if (step.action === 'pay' && personRef.current) {
-        const code = ensureSelfToken(personRef.current)
-        if (code) {
-          const result = pay({ code, storeId: 's1', items: demoLines() })
-          if (result.ok) setDemoReceipt(result)
-        }
+        const result = pay({ code: personRef.current, storeId: 's1', items: demoLines() })
+        if (result.ok) setDemoReceipt(result)
       }
       seenStep.current = index
     } else if (step.view === 'wallet' && personRef.current) {

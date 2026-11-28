@@ -44,10 +44,27 @@ export function checkout(options: {
   const items = options.items.filter((item) => item.qty > 0 && item.unitPrice > 0)
   if (items.length === 0) return { ok: false, error: 'empty' }
 
-  const tokenResult = validateToken(options.code, options.state.tokens, options.now)
-  if (!tokenResult.ok) return tokenResult
+  const normalized = normalizeCode(options.code)
+  const byCard = options.state.beneficiaries.find((item) => normalizeCode(item.id) === normalized)
+  let beneficiaryId = ''
+  let via: 'self' | 'trusted' = 'self'
+  let tokenCode = normalized
+  let consume: string | null = null
 
-  const beneficiary = options.state.beneficiaries.find((item) => item.id === tokenResult.token.beneficiaryId)
+  if (byCard) {
+    beneficiaryId = byCard.id
+    tokenCode = byCard.id
+  } else {
+    const tokenResult = validateToken(options.code, options.state.tokens, options.now)
+    if (!tokenResult.ok) return tokenResult
+    if (tokenResult.token.kind !== 'trusted') return { ok: false, error: 'not_found' }
+    beneficiaryId = tokenResult.token.beneficiaryId
+    via = 'trusted'
+    tokenCode = tokenResult.token.code
+    consume = tokenResult.token.code
+  }
+
+  const beneficiary = options.state.beneficiaries.find((item) => item.id === beneficiaryId)
   if (!beneficiary) return { ok: false, error: 'bad_card' }
   if (beneficiary.status === 'frozen') return { ok: false, error: 'frozen' }
   if (beneficiary.status === 'revoked') return { ok: false, error: 'revoked' }
@@ -84,16 +101,15 @@ export function checkout(options: {
     certDebit: split.certDebit,
     certGross: split.certGross,
     cash: split.cash,
-    tokenCode: tokenResult.token.code,
-    via: tokenResult.token.kind,
+    tokenCode,
+    via,
   }
 
-  const normalized = normalizeCode(options.code)
   const state: StoreState = {
     ...options.state,
-    tokens: options.state.tokens.map((token) =>
-      token.code === normalized ? { ...token, used: true } : token,
-    ),
+    tokens: consume
+      ? options.state.tokens.map((token) => (token.code === consume ? { ...token, used: true } : token))
+      : options.state.tokens,
     transactions: [...options.state.transactions, transaction],
   }
 

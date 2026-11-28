@@ -4,14 +4,14 @@ import { Scanner } from '../components/Scanner'
 import { lineFromProduct, productById, PRODUCTS, SHOPS } from '../data/catalog'
 import { accountOf } from '../lib/account'
 import { formatRub } from '../lib/format'
-import { useStore, type EdgeKind } from '../state/store'
+import { useStore } from '../state/store'
 import type { PayFailure, PaySuccess } from '../lib/checkout'
 import { CATEGORIES, CATEGORY_LABELS, type Category, type LineInput } from '../types'
 
 const PAY_ERROR: Record<PayFailure['error'], string> = {
-  not_found: 'Код не найден. Попросите обновить карту на телефоне.',
-  expired: 'Срок кода истёк. Попросите новый код с телефона.',
-  used: 'Этот код уже использован.',
+  not_found: 'Такой карты нет. Проверьте номер.',
+  expired: 'Срок кода для родственника истёк.',
+  used: 'Этот код для родственника уже использован.',
   frozen: 'Карта заблокирована. Оплата баллами недоступна.',
   revoked: 'Карта аннулирована. Оплата баллами недоступна.',
   expired_card: 'Срок действия карты закончился. Оплата баллами недоступна.',
@@ -28,7 +28,7 @@ export function Pos({
   preset: LineInput[] | null
   external: PaySuccess | null
 }) {
-  const { state, pay, edgeCode, ensureSelfToken } = useStore()
+  const { state, pay } = useStore()
   const [storeId, setStoreId] = useState(SHOPS[0].id)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<Category | 'all'>('all')
@@ -67,11 +67,10 @@ export function Pos({
     setLocal(pay({ code: nextCode, storeId, items }))
   }
 
-  const runEdge = (kind: EdgeKind) => {
-    const next = edgeCode(kind)
+  const runCard = (id: string) => {
     const items = basket.length > 0 ? basket : [lineFromProduct(productById('milk')!)]
     setBasket(items)
-    submit(next, items)
+    submit(id, items)
   }
 
   const overflow = () => {
@@ -85,10 +84,8 @@ export function Pos({
     const beer = productById('beer')!
     const qty = Math.min(99, Math.max(2, Math.ceil((account.balance + 500) / rice.price)))
     const items = [lineFromProduct(rice, qty), lineFromProduct(beer)]
-    const next = ensureSelfToken(person.id)
-    if (!next) return
     setBasket(items)
-    submit(next, items)
+    submit(person.id, items)
   }
 
   return (
@@ -164,7 +161,7 @@ export function Pos({
           </ul>
           <label>
             Код с карты
-            <input value={code} onChange={(event) => setCode(event.target.value)} placeholder="TK-XXXXXXXX" autoCapitalize="characters" />
+            <input value={code} onChange={(event) => setCode(event.target.value)} placeholder="ПК-1028" autoCapitalize="characters" />
           </label>
           <div className="row-actions">
             <button type="button" className="btn btn-ghost" onClick={() => setScan(true)}>
@@ -193,16 +190,33 @@ export function Pos({
           <details className="judge">
             <summary>Проверить отказ</summary>
             <div className="chips">
-              <button type="button" className="chip" onClick={() => runEdge('expired')}>
-                Просроченный код
+              <button type="button" className="chip" onClick={() => runCard('ПК-0000')}>
+                Нет такой карты
               </button>
-              <button type="button" className="chip" onClick={() => runEdge('used')}>
-                Код уже использован
-              </button>
-              <button type="button" className="chip" onClick={() => runEdge('frozen')}>
+              <button
+                type="button"
+                className="chip"
+                onClick={() => runCard(state.beneficiaries.find((item) => item.status === 'frozen')?.id ?? '')}
+              >
                 Карта заморожена
               </button>
-              <button type="button" className="chip" onClick={() => runEdge('expired_card')}>
+              <button
+                type="button"
+                className="chip"
+                onClick={() => runCard(state.beneficiaries.find((item) => item.status === 'revoked')?.id ?? '')}
+              >
+                Карта отозвана
+              </button>
+              <button
+                type="button"
+                className="chip"
+                onClick={() =>
+                  runCard(
+                    state.beneficiaries.find((item) => item.status === 'active' && item.validUntil < Date.now())?.id ??
+                      '',
+                  )
+                }
+              >
                 Срок карты истёк
               </button>
               <button type="button" className="chip" onClick={overflow}>
