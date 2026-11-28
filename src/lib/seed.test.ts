@@ -5,11 +5,11 @@ import { HARD_FORBIDDEN } from '../types'
 import { accountOf } from './account'
 import { analyzeFraud } from './fraud'
 
-describe('демо-данные', () => {
+describe('учебные данные', () => {
   const now = new Date(2026, 10, 18, 15, 0, 0).getTime()
   const state = createSeed(now)
 
-  it('держит три программы и 25 псевдонимных карт', () => {
+  it('держит три программы и 25 карт с номерами', () => {
     expect(state.programs).toHaveLength(3)
     expect(state.beneficiaries).toHaveLength(25)
     expect(PRODUCTS.length).toBeGreaterThanOrEqual(60)

@@ -117,13 +117,12 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
     <div className="page">
       <header className="page-head">
         <div>
-          <p className="kicker">Роль получателя</p>
           <h1>Кошелёк</h1>
         </div>
       </header>
       <div className="demo-pick">
         <label>
-          Демонстрация: чья карта открыта
+          Чья карта
           <select value={person.id} onChange={(event) => onSelect(event.target.value)}>
             {state.beneficiaries.map((item) => (
               <option key={item.id} value={item.id}>
@@ -132,7 +131,6 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
             ))}
           </select>
         </label>
-        <p className="muted">На телефоне этого списка нет. Человек видит только свою карту, без слова «помощь».</p>
       </div>
       <div className={large ? 'wallet-layout is-large' : 'wallet-layout'}>
         <div className="phone">
@@ -187,12 +185,11 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                   </button>
                 </div>
               )}
-              <p className="muted">Код меняется каждую минуту и сгорает после одной оплаты.</p>
+              <p className="muted">Код на минуту. Одна оплата.</p>
               <Meter spent={account.spent} limit={program.monthlyLimit + account.extra} />
               {!blocked && (
                 <div className="trusted">
-                  <h2>Передать доверенному лицу</h2>
-                  <p>Одноразовый код на 24 часа для родственника или социального работника. На кассе он выглядит так же.</p>
+                  <h2>Код для родственника</h2>
                   {trusted ? (
                     <>
                       <QrView value={trusted.code} label="Код для доверенного лица" />
@@ -202,7 +199,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                           {copied === trusted.code ? 'Скопировано' : 'Скопировать'}
                         </button>
                       </div>
-                      <p className="muted">Сгорит после одной покупки или через {formatCountdown(trusted.expiresAt - clock)}.</p>
+                      <p className="muted">Одна покупка. Осталось {formatCountdown(trusted.expiresAt - clock)}.</p>
                     </>
                   ) : (
                     <button type="button" className="btn btn-primary" onClick={() => issueTrusted(person.id)}>
@@ -238,7 +235,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
               })}
               {program.multipliers.map((item) => (
                 <p key={item.category}>
-                  {CATEGORY_LABELS[item.category as Category]} {formatMult(item.multiplier)} — баллы тратятся медленнее.
+                  {CATEGORY_LABELS[item.category as Category]} {formatMult(item.multiplier)}, баллы списываются реже.
                 </p>
               ))}
             </div>
@@ -270,7 +267,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                     ))}
                 </ul>
               )}
-              {list.length === 0 && <p className="muted">Список пуст. Добавьте продукты и сразу увидите, хватит ли баллов.</p>}
+              {list.length === 0 && <p className="muted">Список пуст.</p>}
               <ul className="pick-list">
                 {preview.lines.map((line) => (
                   <li key={line.productId}>
@@ -306,7 +303,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
           {tab === 'history' && (
             <div className="stack">
               <h2>Покупки</h2>
-              {history.length === 0 && <p className="muted">Покупок пока нет.</p>}
+              {history.length === 0 && <p className="muted">Покупок нет.</p>}
               <ul className="history">
                 {history.map((tx) => (
                   <li key={tx.id}>
@@ -327,16 +324,6 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
             </div>
           )}
         </div>
-        <aside className="wallet-note">
-          <p className="kicker">Как это видит человек</p>
-          <h2>Обычная карта, не талон на помощь</h2>
-          <p>
-            На экране нет слов «фонд» и «благотворительность». QR живёт минуту и принимается один раз: снимок экрана
-            нельзя переслать и использовать снова.
-          </p>
-          <p>Крупный шрифт увеличивает текст и кнопки. Код для родственника сгорает после одной покупки.</p>
-          <p>Список покупок считает цены заранее и предупреждает, если баллы не покроют корзину.</p>
-        </aside>
       </div>
     </div>
   )

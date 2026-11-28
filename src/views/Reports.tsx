@@ -10,7 +10,7 @@ import { useStore } from '../state/store'
 
 type Range = 'month' | 'prev' | 'days'
 
-export function Reports({ onDonors }: { onDonors: () => void }) {
+export function Reports({ onVolunteers }: { onVolunteers: () => void }) {
   const { state } = useStore()
   const [range, setRange] = useState<Range>('month')
   const now = Date.now()
@@ -50,16 +50,15 @@ export function Reports({ onDonors }: { onDonors: () => void }) {
     <div className="page">
       <header className="page-head">
         <div>
-          <p className="kicker">Роль фонда</p>
           <h1>Отчёты</h1>
-          <p className="muted">{bounds.title}. В выгрузке только псевдонимы.</p>
+          <p className="muted">{bounds.title}</p>
         </div>
         <div className="row-actions">
-          <button type="button" className="btn btn-ghost" onClick={onDonors}>
-            Сводка для донора
+          <button type="button" className="btn btn-ghost" onClick={onVolunteers}>
+            Для волонтёров
           </button>
           <button type="button" className="btn btn-primary" onClick={download}>
-            Скачать CSV
+            Скачать таблицу
           </button>
         </div>
       </header>
@@ -107,7 +106,7 @@ export function Reports({ onDonors }: { onDonors: () => void }) {
       <section className="report-grid">
         <article className="panel">
           <h2>Категории</h2>
-          {report.byCategory.length === 0 ? <p className="muted">За период покупок нет.</p> : <Donut parts={report.byCategory.map((item) => ({ label: item.label, value: item.gross }))} />}
+          {report.byCategory.length === 0 ? <p className="muted">Покупок нет.</p> : <Donut parts={report.byCategory.map((item) => ({ label: item.label, value: item.gross }))} />}
         </article>
         <article className="panel">
           <h2>Магазины</h2>
@@ -115,17 +114,14 @@ export function Reports({ onDonors }: { onDonors: () => void }) {
         </article>
       </section>
       <section className="panel">
-        <h2>На что смотреть вручную</h2>
-        <p className="muted">
-          Покупка не блокируется. Флаг — повод для фонда проверить серию чеков, а не повод останавливать человека на кассе.
-        </p>
-        {flags.length === 0 && <p>За период необычных серий нет.</p>}
+        <h2>Странные покупки</h2>
+        {flags.length === 0 && <p>Ничего необычного.</p>}
         <ul className="flags">
           {flags.map((flag) => {
             const shop = SHOPS.find((item) => item.id === flag.storeId)
             return (
               <li key={`${flag.beneficiaryId}-${flag.code}-${flag.at}`}>
-                <span className={`pill pill-${FLAG_LEVEL[flag.code]}`}>{FLAG_LEVEL[flag.code] === 'high' ? 'важно' : FLAG_LEVEL[flag.code] === 'medium' ? 'стоит глянуть' : 'заметка'}</span>
+                <span className={`pill pill-${FLAG_LEVEL[flag.code]}`}>{FLAG_LEVEL[flag.code] === 'high' ? 'важно' : FLAG_LEVEL[flag.code] === 'medium' ? 'проверить' : 'заметка'}</span>
                 <div>
                   <strong>{flag.beneficiaryId}</strong>
                   <p>{FLAG_TEXT[flag.code]}</p>

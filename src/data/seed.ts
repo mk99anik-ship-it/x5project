@@ -16,7 +16,7 @@ export function demoPrograms(): Program[] {
     {
       id: 'prog-family',
       name: 'Семьи с детьми',
-      description: 'Продукты для дома, где есть дети. Детское питание, овощи и молоко списываются выгоднее, на сладкое есть потолок.',
+      description: 'Для семей с детьми. Детское питание, овощи и молоко списывают меньше баллов. На сладкое есть предел.',
       monthlyLimit: 8000,
       validityMonths: 6,
       allowed: [...FOOD, 'baby', 'sweets'],
@@ -32,7 +32,7 @@ export function demoPrograms(): Program[] {
     {
       id: 'prog-senior',
       name: 'Пожилые',
-      description: 'Базовый продуктовый набор. Овощи, молоко и рыба расходуют месячный лимит медленнее.',
+      description: 'Овощи, молоко и рыба списывают меньше баллов.',
       monthlyLimit: 5500,
       validityMonths: 12,
       allowed: [...FOOD, 'sweets'],
@@ -47,7 +47,7 @@ export function demoPrograms(): Program[] {
     {
       id: 'prog-diabetes',
       name: 'Диабет',
-      description: 'Без сладкого и сахара. Выше коэффициент на овощи, рыбу и молочные продукты.',
+      description: 'Без сладкого и сахара. Овощи, рыба и молоко списывают меньше баллов.',
       monthlyLimit: 6500,
       validityMonths: 6,
       allowed: [...FOOD],

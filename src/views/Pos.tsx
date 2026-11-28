@@ -10,8 +10,8 @@ import { CATEGORIES, CATEGORY_LABELS, type Category, type LineInput } from '../t
 
 const PAY_ERROR: Record<PayFailure['error'], string> = {
   not_found: 'Код не найден. Попросите обновить карту на телефоне.',
-  expired: 'Срок кода истёк. На карте уже новый QR — отсканируйте его.',
-  used: 'Этот код уже использован. Повторная оплата по нему невозможна.',
+  expired: 'Срок кода истёк. Попросите новый код с телефона.',
+  used: 'Этот код уже использован.',
   frozen: 'Карта заблокирована. Оплата баллами недоступна.',
   revoked: 'Карта аннулирована. Оплата баллами недоступна.',
   expired_card: 'Срок действия карты закончился. Оплата баллами недоступна.',
@@ -95,8 +95,7 @@ export function Pos({
     <div className="page">
       <header className="page-head">
         <div>
-          <p className="kicker">Роль кассы</p>
-          <h1>Обычная оплата</h1>
+          <h1>Касса</h1>
         </div>
         <label>
           Магазин
@@ -143,7 +142,7 @@ export function Pos({
         </section>
         <section className="basket-panel">
           <h2>Чек · {formatRub(total)}</h2>
-          {basket.length === 0 && <p className="muted">Добавьте товары из каталога. В нём около шестидесяти позиций, включая алкоголь и табак.</p>}
+          {basket.length === 0 && <p className="muted">Добавьте товары.</p>}
           <ul className="pick-list">
             {basket.map((item) => (
               <li key={item.productId}>
@@ -192,8 +191,7 @@ export function Pos({
             />
           )}
           <details className="judge">
-            <summary>Проверка отказов</summary>
-            <p>Кнопки подставляют учебный код и проводят текущий чек. Если чек пуст, добавляется молоко, чтобы был виден именно отказ карты.</p>
+            <summary>Проверить отказ</summary>
             <div className="chips">
               <button type="button" className="chip" onClick={() => runEdge('expired')}>
                 Просроченный код
