@@ -1,5 +1,4 @@
 import type { StoreState } from '../types'
-import { analyzeFraud } from './fraud'
 import { periodStart } from './period'
 import { budgetSnapshot, buildReport } from './report'
 
@@ -17,9 +16,5 @@ export function monthStats(state: StoreState, now = Date.now()) {
     activeLimits: limits,
     spent: report.spent,
   })
-  const allLimits = Object.fromEntries(state.beneficiaries.map((person) => [person.id, limitOf(person.id)]))
-  const flags = analyzeFraud({ transactions: state.transactions, limits: allLimits, now }).filter(
-    (flag) => flag.at >= from && flag.at <= now,
-  )
-  return { from, now, report, budget, flags, activeCount: active.length }
+  return { from, now, report, budget, activeCount: active.length }
 }

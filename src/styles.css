@@ -170,6 +170,27 @@ button { cursor: pointer; }
 .sample-receipt dl div, .receipt-total div { display: flex; justify-content: space-between; gap: 12px; }
 .sample-receipt dd, .receipt-total dd { margin: 0; font-family: var(--serif); font-size: 1.4rem; }
 .problem, .steps, .audiences, .impl { margin: 42px 0; }
+.life-title { margin-top: 28px; }
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0 16px;
+}
+.flow-node {
+  flex: 1 1 0;
+  min-width: 0;
+  background: #fff;
+  color: var(--green);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.flow-server { background: var(--green); color: #fff; border-color: var(--green); }
+.flow-arrow { flex: 0 0 auto; color: var(--green); font-size: 1.5rem; line-height: 1; font-weight: 750; }
 .trio, .program-grid, .stat-grid, .report-grid { display: grid; gap: 14px; }
 .trio article, .program-card, .panel, .stat-grid article { padding: 18px; }
 .steps ol, .phases { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
@@ -195,6 +216,7 @@ button { cursor: pointer; }
 }
 .legal { margin: 16px 0; padding: 16px; border-left: 3px solid var(--green); }
 .footer { color: var(--muted); padding-top: 12px; }
+.debug-link { color: var(--muted); font-size: 0.85rem; }
 .budget { padding: 18px; margin-bottom: 22px; align-items: stretch; }
 .budget-sum { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); margin: 0; }
 .budget-side { display: grid; gap: 8px; margin: 0; }
@@ -417,6 +439,8 @@ textarea { resize: vertical; }
 select, input, textarea { max-width: 100%; }
 
 @media (max-width: 800px) {
+  .flow { flex-direction: column; align-items: stretch; }
+  .flow-arrow { transform: rotate(90deg); align-self: center; }
   .nav {
     flex-wrap: nowrap;
     overflow-x: auto;

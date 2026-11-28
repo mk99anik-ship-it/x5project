@@ -116,11 +116,11 @@ export function analyzeFraud(options: {
 }
 
 export const FLAG_TEXT: Record<FlagCode, string> = {
-  burst: 'Две покупки с интервалом меньше 30 минут',
-  velocity: 'Три и больше покупок за 24 часа',
-  store_hop: 'Три и больше разных магазинов за 7 дней',
-  unusual_store: 'Покупка в магазине, где человек почти не бывает',
-  limit_drain: 'Одна покупка списала больше 85% месячного лимита',
+  burst: 'Две покупки с разницей меньше 30 минут',
+  velocity: 'Три покупки или больше за сутки',
+  store_hop: 'Три разных магазина за неделю',
+  unusual_store: 'Покупка в магазине, где человек обычно не бывает',
+  limit_drain: 'Один чек больше 85% месячного лимита',
 }
 
 export const FLAG_LEVEL: Record<FlagCode, 'high' | 'medium' | 'low'> = {

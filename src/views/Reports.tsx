@@ -1,9 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Bars, Donut } from '../components/Charts'
-import { SHOPS } from '../data/catalog'
-import { formatDateTime, formatRub, formatShare } from '../lib/format'
+import { formatRub, formatShare } from '../lib/format'
 import { addDays, periodEnd, periodLabel, periodStart } from '../lib/period'
-import { FLAG_LEVEL, FLAG_TEXT, analyzeFraud } from '../lib/fraud'
 import { buildReport, transactionsToCsv } from '../lib/report'
 import { plural } from '../lib/text'
 import { useStore } from '../state/store'
@@ -25,15 +23,6 @@ export function Reports({ onVolunteers }: { onVolunteers: () => void }) {
     return { from: periodStart(now), to: now, title: periodLabel(now) }
   }, [now, range])
   const report = buildReport(state.transactions, bounds.from, bounds.to)
-  const limits = Object.fromEntries(
-    state.beneficiaries.map((person) => [
-      person.id,
-      state.programs.find((program) => program.id === person.programId)?.monthlyLimit ?? 0,
-    ]),
-  )
-  const flags = analyzeFraud({ transactions: state.transactions, limits, now }).filter(
-    (flag) => flag.at >= bounds.from && flag.at <= bounds.to,
-  )
 
   const download = () => {
     const slice = state.transactions.filter((tx) => tx.createdAt >= bounds.from && tx.createdAt <= bounds.to)
@@ -112,28 +101,6 @@ export function Reports({ onVolunteers }: { onVolunteers: () => void }) {
           <h2>Магазины</h2>
           <Bars rows={report.byStore.map((item) => ({ label: item.name, value: item.gross }))} />
         </article>
-      </section>
-      <section className="panel">
-        <h2>Покупки, которые стоит проверить</h2>
-        {flags.length === 0 && <p>Таких покупок нет.</p>}
-        <ul className="flags">
-          {flags.map((flag) => {
-            const shop = SHOPS.find((item) => item.id === flag.storeId)
-            return (
-              <li key={`${flag.beneficiaryId}-${flag.code}-${flag.at}`}>
-                <span className={`pill pill-${FLAG_LEVEL[flag.code]}`}>{FLAG_LEVEL[flag.code] === 'high' ? 'важно' : FLAG_LEVEL[flag.code] === 'medium' ? 'проверить' : 'заметка'}</span>
-                <div>
-                  <strong>{flag.beneficiaryId}</strong>
-                  <p>{FLAG_TEXT[flag.code]}</p>
-                  <p className="muted">
-                    {formatDateTime(flag.at)}
-                    {shop ? ` · ${shop.name}, ${shop.address}` : ''}
-                  </p>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
       </section>
     </div>
   )

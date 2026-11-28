@@ -77,6 +77,32 @@ export function Landing({ onDemo, onVolunteers }: { onDemo: () => void; onVolunt
             </div>
           </li>
         </ol>
+        <h3 className="life-title">Как это устроено в жизни</h3>
+        <figure
+          className="flow"
+          aria-label="Фонд обращается к серверу. Касса X5 спрашивает сервер. Карта в телефоне приходит на кассу."
+        >
+          <div className="flow-node">Фонд</div>
+          <span className="flow-arrow" aria-hidden="true">
+            →
+          </span>
+          <div className="flow-node flow-server">Сервер</div>
+          <span className="flow-arrow" aria-hidden="true">
+            ←
+          </span>
+          <div className="flow-node">Касса X5</div>
+          <span className="flow-arrow" aria-hidden="true">
+            ←
+          </span>
+          <div className="flow-node">Карта в телефоне</div>
+        </figure>
+        <p>
+          В демо все роли открыты на одном сайте. В жизни фонд в своём кабинете отдаёт на сервер карты, лимиты и
+          правила. Человеку не нужно новое приложение: карта живёт в «Пятёрочке», «Перекрёстке», Wallet или на пластике,
+          и он показывает её на кассе. Касса сканирует карту и спрашивает сервер, сколько списать баллами. Остальное
+          человек платит сам. Фонд забирает отчёты с того же сервера. Деньги переводит фонд, а X5 начисляет их баллами
+          по договору. В демо вместо сервера работает браузер.
+        </p>
       </section>
 
       <section className="impl">
@@ -121,6 +147,9 @@ export function Landing({ onDemo, onVolunteers }: { onDemo: () => void; onVolunt
 
       <footer className="footer">
         <p>Тихая касса — прототип для фонда X5 «Выручаем».</p>
+        <a className="debug-link" href="#/debug">
+          Техраздел
+        </a>
       </footer>
     </div>
   )
