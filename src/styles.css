@@ -333,8 +333,8 @@ textarea { resize: vertical; }
 .basket-panel { display: grid; align-content: start; gap: 10px; }
 .receipt { padding: 16px; display: grid; gap: 8px; }
 .receipt header h3 { font-family: var(--sans); }
-.judge { background: var(--green-soft); color: var(--ink); border-radius: 14px; padding: 10px 12px; }
-.judge summary { cursor: pointer; font-weight: 750; }
+.more { background: var(--green-soft); color: var(--ink); border-radius: 14px; padding: 10px 12px; }
+.more summary { cursor: pointer; font-weight: 750; }
 .stat-grid article p { color: var(--muted); margin: 0; }
 .stat-grid strong { display: block; font-family: var(--serif); font-size: 1.7rem; margin-top: 6px; }
 .donut-wrap { display: grid; gap: 12px; }

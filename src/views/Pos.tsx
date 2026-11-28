@@ -187,7 +187,7 @@ export function Pos({
               cash={success.split.cash}
             />
           )}
-          <details className="judge">
+          <details className="more">
             <summary>Проверить отказ</summary>
             <div className="chips">
               <button type="button" className="chip" onClick={() => runCard('ПК-0000')}>

@@ -63,7 +63,7 @@ export function ReceiptView({
           <dd>{formatRub(cash)}</dd>
         </div>
       </dl>
-      <details className="judge">
+      <details className="more">
         <summary>Как разделился чек</summary>
         <ul>
           {lines.map((line, index) => (
