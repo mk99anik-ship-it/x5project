@@ -73,7 +73,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
     if (!person) return
     const program = state.programs.find((item) => item.id === programId)
     setNote(
-      `Выпущен ${person.id}. Лимит ${formatRub(program?.monthlyLimit ?? 0)}, действует до ${formatFullDate(person.validUntil)}.`,
+      `Выпущена карта ${person.id}, лимит ${formatRub(program?.monthlyLimit ?? 0)}, действует до ${formatFullDate(person.validUntil)}.`,
     )
   }
 
@@ -103,7 +103,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
           <p className="budget-sum">{formatRub(stats.budget.pool)}</p>
           <p>
             Хватает на {stats.budget.familiesPossible}{' '}
-            {plural(stats.budget.familiesPossible, 'семью', 'семьи', 'семей')}. Карт сейчас {stats.activeCount}, свободно ещё{' '}
+            {plural(stats.budget.familiesPossible, 'семью', 'семьи', 'семей')}, карт сейчас {stats.activeCount}, и свободно ещё{' '}
             {stats.budget.freeSlots}.
           </p>
         </div>
@@ -238,7 +238,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
       </section>
 
       {draft && (
-        <Modal title={draft.id ? 'Программа' : 'Новая программа'} onClose={() => setDraft(null)}>
+        <Modal title={draft.id ? 'Изменить программу' : 'Новая программа'} onClose={() => setDraft(null)}>
           <div className="form">
             <label>
               Название
@@ -297,7 +297,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
               </div>
             </fieldset>
             <fieldset>
-              <legend>Списание баллов</legend>
+              <legend>Льготный коэффициент</legend>
               <div className="form-row">
                 {BONUS.map((category) => (
                   <label key={category}>
@@ -313,7 +313,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
               </div>
             </fieldset>
             <fieldset>
-              <legend>Потолок категории в месяц</legend>
+              <legend>Месячный предел на категорию</legend>
               {draft.caps.map((cap, index) => (
                 <div className="form-row" key={`${cap.category}-${index}`}>
                   <label>
@@ -372,7 +372,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
                   setDraft({ ...draft, caps: [...draft.caps, { category, periodCap: 500 }] })
                 }}
               >
-                Добавить потолок
+                Добавить предел
               </button>
             </fieldset>
             {formError && (

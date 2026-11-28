@@ -68,7 +68,7 @@ export function ReceiptView({
         <ul>
           {lines.map((line, index) => (
             <li key={`${line.productId}-why-${index}`}>
-              {line.name}: {REASON[line.reason]}. Баллы {formatRub(line.certGross)}, с лимита {formatRub(line.certDebit)}, доплата{' '}
+              {line.name}: {REASON[line.reason]}, баллы {formatRub(line.certGross)}, с лимита {formatRub(line.certDebit)}, доплата{' '}
               {formatRub(line.cash)}.
             </li>
           ))}

@@ -32,7 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
       >
         <div style={{ maxWidth: 420 }}>
           <h1 style={{ fontSize: '1.6rem', margin: '0 0 12px' }}>Не получилось открыть приложение</h1>
-          <p style={{ margin: '0 0 16px' }}>Сохранённые данные могли устареть.</p>
+          <p style={{ margin: '0 0 16px' }}>Сохранённые данные могли устареть, поэтому их можно сбросить.</p>
           <button
             type="button"
             onClick={this.reset}
