@@ -1,6 +1,6 @@
 :root {
   --bg: #eafbdc;
-  --paper: #f4f5f4;
+  --paper: #ffffff;
   --card: #ffffff;
   --ink: #05310a;
   --muted: #3d5344;
@@ -9,7 +9,7 @@
   --green-2: #05310a;
   --green-soft: #eafbdc;
   --green-bright: #5faf2d;
-  --gold: #5faf2d;
+  --gold: #faa028;
   --clay: #9b1c1c;
   --danger: #9b1c1c;
   --warn-bg: #eef1ee;
@@ -147,7 +147,7 @@ button { cursor: pointer; }
 .btn-primary { background: var(--green); color: var(--on-green); }
 .btn-primary:focus-visible { outline-color: var(--on-green); }
 .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line); }
-.btn-danger { background: #fff; color: var(--danger); border-color: #e8c4c4; }
+.btn-danger { background: #fff; color: var(--danger); border-color: var(--line); }
 .btn-small { padding: 8px 12px; font-size: 0.92rem; }
 .hero { align-items: stretch; margin-bottom: 28px; }
 .hero-actions, .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
@@ -211,7 +211,7 @@ button { cursor: pointer; }
 }
 .badge-ok, .pill-low { background: var(--green-soft); color: var(--green); }
 .badge-warn, .pill-medium { background: var(--warn-bg); color: var(--ink); }
-.badge-danger, .pill-high { background: #fde8e8; color: var(--danger); }
+.badge-danger, .pill-high { background: var(--warn-bg); color: var(--ink); }
 .search, .form, .stack { display: grid; gap: 10px; }
 .form-row { display: grid; gap: 10px; }
 fieldset { border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
@@ -372,7 +372,7 @@ textarea { resize: vertical; }
   border-color: #4e7a52;
   opacity: 1;
 }
-.qr-reader { border-radius: 16px; overflow: hidden; background: #111; min-height: 240px; }
+.qr-reader { border-radius: 16px; overflow: hidden; background: var(--green-2); min-height: 240px; }
 .demo-pick { margin-bottom: 14px; }
 
 .is-large { font-size: 1.4rem; }
