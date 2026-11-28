@@ -73,7 +73,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
     if (!person) return
     const program = state.programs.find((item) => item.id === programId)
     setNote(
-      `Выпущена карта ${person.id}, лимит ${formatRub(program?.monthlyLimit ?? 0)}, действует до ${formatFullDate(person.validUntil)}.`,
+      `Карта ${person.id} готова: лимит ${formatRub(program?.monthlyLimit ?? 0)} в месяц, действует до ${formatFullDate(person.validUntil)}.`,
     )
   }
 
@@ -102,9 +102,9 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
           <p className="kicker">Бюджет фонда</p>
           <p className="budget-sum">{formatRub(stats.budget.pool)}</p>
           <p>
-            Хватает на {stats.budget.familiesPossible}{' '}
-            {plural(stats.budget.familiesPossible, 'семью', 'семьи', 'семей')}, карт сейчас {stats.activeCount}, и свободно ещё{' '}
-            {stats.budget.freeSlots}.
+            Бюджета хватит на {stats.budget.familiesPossible}{' '}
+            {plural(stats.budget.familiesPossible, 'семью', 'семьи', 'семей')}. Сейчас выдано {stats.activeCount}{' '}
+            {plural(stats.activeCount, 'карта', 'карты', 'карт')}, можно выдать ещё {stats.budget.freeSlots}.
           </p>
         </div>
         <dl className="budget-side">

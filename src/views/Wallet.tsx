@@ -170,7 +170,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                           {copied === trusted.code ? 'Скопировано' : 'Скопировать'}
                         </button>
                       </div>
-                      <p className="muted">Код на одну покупку, осталось {formatCountdown(trusted.expiresAt - clock)}.</p>
+                      <p className="muted">Код на одну покупку. Осталось {formatCountdown(trusted.expiresAt - clock)}.</p>
                     </>
                   ) : (
                     <button type="button" className="btn btn-primary" onClick={() => issueTrusted(person.id)}>
@@ -262,10 +262,10 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
               </ul>
               {preview.lines.length > 0 && (
                 <div className={preview.cash > 0 ? 'warn' : 'ok'} role="status">
-                  Баллами покроется {formatRub(preview.certGross)}
+                  Баллами покроется {formatRub(preview.certGross)}.
                   {preview.cash > 0
-                    ? `, а на кассе нужно доплатить ${formatRub(preview.cash)}.`
-                    : ', и доплачивать не нужно.'}
+                    ? ` На кассе нужно доплатить ${formatRub(preview.cash)}.`
+                    : ' Доплачивать не нужно.'}
                 </div>
               )}
             </div>

@@ -43,8 +43,8 @@ export function Volunteers({ onBack }: { onBack: () => void }) {
           <p className="kicker">Бюджет фонда</p>
           <p className="budget-sum">{formatRub(budget.pool)}</p>
           <p>
-            Хватает на {budget.familiesPossible} {plural(budget.familiesPossible, 'семью', 'семьи', 'семей')}, карт сейчас{' '}
-            {budget.issued}, и свободных мест ещё {budget.freeSlots}, куда можно подключить новые семьи.
+            Бюджета хватит на {budget.familiesPossible} {plural(budget.familiesPossible, 'семью', 'семьи', 'семей')}. Сейчас
+            выдано {budget.issued} {plural(budget.issued, 'карта', 'карты', 'карт')}, можно выдать ещё {budget.freeSlots}.
           </p>
         </div>
       </section>
@@ -61,7 +61,7 @@ export function Volunteers({ onBack }: { onBack: () => void }) {
           <h2>В каких магазинах покупали</h2>
           <Bars rows={report.byStore.map((item) => ({ label: item.name, value: item.gross }))} />
           <p className="muted">
-            Покупок, которые стоит проверить, за месяц {stats.flags.length}, и имён в сводке нет.
+            За месяц таких покупок: {stats.flags.length}. Имён в сводке нет.
           </p>
         </article>
       </section>
