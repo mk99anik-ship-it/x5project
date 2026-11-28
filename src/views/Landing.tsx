@@ -4,9 +4,9 @@ export function Landing({ onDemo, onVolunteers }: { onDemo: () => void; onVolunt
       <section className="hero">
         <div>
           <p className="kicker">Фонд «Выручаем»</p>
-          <h1>Помощь, которую не видно в очереди</h1>
+          <h1>Продуктовая карта в обычном магазине</h1>
           <p className="lead">
-            Человек получает продуктовую карту и платит ею в обычном магазине. Соседи видят только баллы.
+            Фонд «Выручаем» выдаёт карту. Человек сам выбирает еду и платит на кассе баллами.
           </p>
           <div className="hero-actions">
             <button type="button" className="btn btn-primary" onClick={onDemo}>
@@ -83,7 +83,7 @@ export function Landing({ onDemo, onVolunteers }: { onDemo: () => void; onVolunt
         <h2>Кому это нужно</h2>
         <ul className="plain-list lines">
           <li>Фонду не нужен склад и раздача. В отчёте видно, на что ушли деньги.</li>
-          <li>Семья берёт детское питание или еду при диабете и стоит в общей очереди.</li>
+          <li>Семья берёт детское питание или еду при диабете. Отдельной выдачи нет.</li>
           <li>Магазин использует ту же кассу. Отдельной выдачи нет.</li>
         </ul>
         <h2>Как подключить в X5</h2>

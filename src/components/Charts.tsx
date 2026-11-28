@@ -1,6 +1,6 @@
 import { formatRub } from '../lib/format'
 
-const COLORS = ['#0F5A05', '#5FAF2D', '#FAA028', '#3C82FF', '#05310A', '#8237D2', '#FA6400', '#6ED2FA', '#6E50FF']
+const COLORS = ['#0F5A05', '#5FAF2D', '#FAA028', '#3C82FF', '#05310A', '#FA6400', '#6ED2FA', '#1F7A32', '#1565C0']
 
 export function Donut({ parts }: { parts: { label: string; value: number }[] }) {
   const total = parts.reduce((sum, part) => sum + part.value, 0)
