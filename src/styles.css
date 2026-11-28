@@ -1,6 +1,6 @@
 :root {
-  --bg: #f4faee;
-  --paper: #fff6ea;
+  --bg: #eafbdc;
+  --paper: #f4f5f4;
   --card: #ffffff;
   --ink: #05310a;
   --muted: #3d5344;
@@ -9,11 +9,10 @@
   --green-2: #05310a;
   --green-soft: #eafbdc;
   --green-bright: #5faf2d;
-  --gold: #faa028;
-  --gold-2: #fff4d6;
+  --gold: #5faf2d;
   --clay: #9b1c1c;
   --danger: #9b1c1c;
-  --warn-bg: #fff4d6;
+  --warn-bg: #eef1ee;
   --on-green: #ffffff;
   --shadow: 0 18px 40px rgba(5, 49, 10, 0.08);
   --sans: "Manrope", "Segoe UI", sans-serif;
@@ -32,7 +31,7 @@ body {
   min-height: 100vh;
   background:
     radial-gradient(1000px 420px at 0% -10%, #eafbdc, transparent 55%),
-    radial-gradient(800px 380px at 100% 0%, #fff6ea, transparent 50%),
+    radial-gradient(800px 380px at 100% 0%, #ffffff, transparent 46%),
     var(--bg);
 }
 body.demo-on { padding-bottom: calc(var(--demo-h, 200px) + 28px + env(safe-area-inset-bottom)); }
@@ -66,7 +65,7 @@ button { cursor: pointer; }
   gap: 8px;
   padding: 10px 12px;
   padding-top: max(10px, env(safe-area-inset-top));
-  background: #f4faee;
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 .top-row {
@@ -92,7 +91,7 @@ button { cursor: pointer; }
   height: 14px;
   border: 1.6px solid var(--green-2);
   border-radius: 3px;
-  box-shadow: inset 0 -5px 0 var(--gold);
+  box-shadow: inset 0 -5px 0 var(--green-bright);
 }
 .nav { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
 .pair { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: baseline; margin: 0; }
@@ -211,7 +210,7 @@ button { cursor: pointer; }
   font-weight: 800;
 }
 .badge-ok, .pill-low { background: var(--green-soft); color: var(--green); }
-.badge-warn, .pill-medium { background: var(--warn-bg); color: #6b4500; }
+.badge-warn, .pill-medium { background: var(--warn-bg); color: var(--ink); }
 .badge-danger, .pill-high { background: #fde8e8; color: var(--danger); }
 .search, .form, .stack { display: grid; gap: 10px; }
 .form-row { display: grid; gap: 10px; }
@@ -233,7 +232,7 @@ textarea { resize: vertical; }
   border-radius: 14px;
 }
 .ok { background: var(--green-soft); color: var(--green-2); }
-.warn { background: var(--warn-bg); color: #6b4500; }
+.warn { background: var(--warn-bg); color: var(--ink); }
 .modal-back {
   position: fixed;
   inset: 0;
@@ -288,9 +287,16 @@ textarea { resize: vertical; }
   gap: 10px;
 }
 .loyalty.is-blocked { filter: grayscale(0.7); }
-.loyalty-chip { width: 34px; height: 24px; border-radius: 6px; background: linear-gradient(135deg, #fff6ea, #faa028); }
+.loyalty-chip { width: 34px; height: 24px; border-radius: 6px; background: #eafbdc; }
 .loyalty-points { font-family: var(--serif); font-size: 2rem; margin: 0; }
 .loyalty-points small { font-family: var(--sans); font-size: 0.9rem; }
+.loyalty-number {
+  margin: 0;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  font-size: 1.2rem;
+}
 .loyalty-block { min-height: 180px; display: grid; place-items: center; text-align: center; background: rgba(255,255,255,0.08); border-radius: 16px; }
 .qr-plate { background: #f7fbf2; border-radius: 16px; padding: 10px; display: grid; place-items: center; }
 .qr-plate img { width: min(220px, 100%); height: auto; }

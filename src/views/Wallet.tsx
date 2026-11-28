@@ -7,7 +7,6 @@ import { rulesOf } from '../lib/checkout'
 import { formatCountdown, formatDateTime, formatRub } from '../lib/format'
 import { splitReceipt, type LineReason } from '../lib/split'
 import { formatMult } from '../lib/text'
-import { RESERVED_CODES } from '../lib/token'
 import { useStore } from '../state/store'
 import { CATEGORY_LABELS, type Category } from '../types'
 
@@ -21,15 +20,13 @@ const REASON: Record<LineReason, string> = {
 }
 
 export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: string | null; onSelect: (id: string) => void; plannerSeed: number }) {
-  const { state, ensureSelfToken, issueTrusted } = useStore()
+  const { state, issueTrusted } = useStore()
   const [tab, setTab] = useState<'card' | 'rules' | 'history' | 'list'>('card')
   const [large, setLarge] = useState(() => localStorage.getItem('tihaya-kassa-large') === '1')
   const [clock, setClock] = useState(() => Date.now())
   const [list, setList] = useState<{ productId: string; qty: number }[]>([])
   const [find, setFind] = useState('')
   const [copied, setCopied] = useState('')
-  const ensureRef = useRef(ensureSelfToken)
-  ensureRef.current = ensureSelfToken
   const seenPlanner = useRef(0)
 
   const person =
@@ -45,15 +42,6 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
   }, [])
 
   useEffect(() => {
-    if (!person || person.status !== 'active' || person.validUntil < Date.now()) return
-    const id = person.id
-    const tick = () => ensureRef.current(id)
-    tick()
-    const timer = window.setInterval(tick, 1000)
-    return () => window.clearInterval(timer)
-  }, [person])
-
-  useEffect(() => {
     if (plannerSeed === 0 || seenPlanner.current === plannerSeed) return
     seenPlanner.current = plannerSeed
     setTab('list')
@@ -64,16 +52,6 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
     localStorage.setItem('tihaya-kassa-large', large ? '1' : '0')
   }, [large])
 
-  const token = person
-    ? state.tokens.find(
-        (item) =>
-          item.beneficiaryId === person.id &&
-          item.kind === 'self' &&
-          !item.used &&
-          item.expiresAt > clock &&
-          !RESERVED_CODES.has(item.code),
-      )
-    : undefined
   const trusted = person
     ? state.tokens.find(
         (item) => item.beneficiaryId === person.id && item.kind === 'trusted' && !item.used && item.expiresAt > clock,
@@ -167,25 +145,18 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                 </p>
                 {blocked ? (
                   <p className="loyalty-block">{blocked}</p>
-                ) : token ? (
-                  <QrView value={token.code} label="Код карты покупателя" />
                 ) : (
-                  <p className="loyalty-block">Обновляем код…</p>
+                  <QrView value={person.id} label={`Номер карты ${person.id}`} />
                 )}
-                <div className="loyalty-bottom">
-                  <span>{person.id}</span>
-                  {token && <span>код {formatCountdown(token.expiresAt - clock)}</span>}
-                </div>
+                <p className="loyalty-number">{person.id}</p>
               </article>
-              {token && !blocked && (
+              {!blocked && (
                 <div className="code-row">
-                  <code>{token.code}</code>
-                  <button type="button" className="btn btn-ghost btn-small" onClick={() => copy(token.code)}>
-                    {copied === token.code ? 'Скопировано' : 'Скопировать'}
+                  <button type="button" className="btn btn-ghost btn-small" onClick={() => copy(person.id)}>
+                    {copied === person.id ? 'Номер скопирован' : 'Скопировать номер'}
                   </button>
                 </div>
               )}
-              <p className="muted">Код на минуту. Одна оплата.</p>
               <Meter spent={account.spent} limit={program.monthlyLimit + account.extra} />
               {!blocked && (
                 <div className="trusted">

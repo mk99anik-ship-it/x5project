@@ -32,11 +32,11 @@ function baseState(patch?: Partial<StoreState>): StoreState {
 }
 
 describe('checkout', () => {
-  it('делит чек, помечает код использованным и уменьшает остаток', () => {
+  it('принимает постоянный номер карты и уменьшает остаток', () => {
     const state = baseState()
     const result = checkout({
       state,
-      code: 'tk-testcode',
+      code: 'пк-2001',
       storeId: 's1',
       storeName: 'Пятёрочка, ул. Лесная, 12',
       now: now + 1000,
@@ -52,20 +52,21 @@ describe('checkout', () => {
     expect(result.split.certDebit).toBe(83.33)
     expect(result.split.cash).toBe(90)
     expect(result.transaction.via).toBe('self')
-    expect(result.state.tokens.find((token) => token.code === 'TK-TESTCODE')?.used).toBe(true)
+    expect(result.transaction.tokenCode).toBe('ПК-2001')
+    expect(result.state.tokens.find((token) => token.code === 'TK-TESTCODE')?.used).toBe(false)
     const account = accountOf(result.state.beneficiaries[0], program, result.state.transactions, now + 1000)
     expect(account.balance).toBe(916.67)
 
     const again = checkout({
       state: result.state,
-      code: 'TK-TESTCODE',
+      code: 'ПК-2001',
       storeId: 's1',
       storeName: 'Пятёрочка',
       now: now + 2000,
       receiptId: 'ЧК-2',
       items: [{ productId: 'rice', name: 'Рис', category: 'grocery', unitPrice: 50, qty: 1 }],
     })
-    expect(again).toMatchObject({ ok: false, error: 'used' })
+    expect(again.ok).toBe(true)
   })
 
   it('не проводит замороженную, отозванную и просроченную карту', () => {
@@ -74,7 +75,7 @@ describe('checkout', () => {
     expect(
       checkout({
         state: frozen,
-        code: 'TK-TESTCODE',
+        code: 'ПК-2001',
         storeId: 's1',
         storeName: 'Магазин',
         now: now + 1000,
@@ -89,7 +90,7 @@ describe('checkout', () => {
     expect(
       checkout({
         state: revoked,
-        code: 'TK-TESTCODE',
+        code: 'ПК-2001',
         storeId: 's1',
         storeName: 'Магазин',
         now: now + 1000,
@@ -103,7 +104,7 @@ describe('checkout', () => {
     expect(
       checkout({
         state: expired,
-        code: 'TK-TESTCODE',
+        code: 'ПК-2001',
         storeId: 's1',
         storeName: 'Магазин',
         now: now + 1000,
@@ -113,24 +114,50 @@ describe('checkout', () => {
     ).toMatchObject({ ok: false, error: 'expired_card' })
   })
 
-  it('отклоняет просроченный код и пустую корзину', () => {
+  it('одноразовый код родственника сгорает, номер карты нет', () => {
     const state = baseState()
-    state.tokens[0].expiresAt = now - 1
+    state.tokens[0] = createToken({ beneficiaryId: 'ПК-2001', kind: 'trusted', now, code: 'TK-TRUSTED1' })
+    const paid = checkout({
+      state,
+      code: 'TK-TRUSTED1',
+      storeId: 's1',
+      storeName: 'Магазин',
+      now: now + 1000,
+      receiptId: 'ЧК-6',
+      items: [{ productId: 'rice', name: 'Рис', category: 'grocery', unitPrice: 50, qty: 1 }],
+    })
+    expect(paid.ok).toBe(true)
+    if (!paid.ok) return
+    expect(paid.transaction.via).toBe('trusted')
     expect(
       checkout({
-        state,
-        code: 'TK-TESTCODE',
+        state: paid.state,
+        code: 'TK-TRUSTED1',
+        storeId: 's1',
+        storeName: 'Магазин',
+        now: now + 2000,
+        receiptId: 'ЧК-6b',
+        items: [{ productId: 'rice', name: 'Рис', category: 'grocery', unitPrice: 50, qty: 1 }],
+      }),
+    ).toMatchObject({ ok: false, error: 'used' })
+    const expired = baseState()
+    expired.tokens[0] = createToken({ beneficiaryId: 'ПК-2001', kind: 'trusted', now: now - 10_000, code: 'TK-OLDTRUST' })
+    expired.tokens[0].expiresAt = now - 1
+    expect(
+      checkout({
+        state: expired,
+        code: 'TK-OLDTRUST',
         storeId: 's1',
         storeName: 'Магазин',
         now,
-        receiptId: 'ЧК-6',
+        receiptId: 'ЧК-6c',
         items: [{ productId: 'rice', name: 'Рис', category: 'grocery', unitPrice: 50, qty: 1 }],
       }),
     ).toMatchObject({ ok: false, error: 'expired' })
     expect(
       checkout({
         state,
-        code: 'TK-TESTCODE',
+        code: 'ПК-2001',
         storeId: 's1',
         storeName: 'Магазин',
         now: now + 1000,
@@ -141,7 +168,7 @@ describe('checkout', () => {
     expect(
       checkout({
         state,
-        code: 'TK-MISSING1',
+        code: 'ПК-0000',
         storeId: 's1',
         storeName: 'Магазин',
         now,

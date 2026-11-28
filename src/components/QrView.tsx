@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
+import { cardQrOptions } from '../lib/qr'
 
 export function QrView({ value, label }: { value: string; label: string }) {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
     let live = true
-    QRCode.toDataURL(value, {
-      margin: 1,
-      width: 320,
-      errorCorrectionLevel: 'M',
-      color: { dark: '#05310A', light: '#F7FBF2' },
-    })
+    QRCode.toDataURL(value, cardQrOptions)
       .then((data) => {
         if (live) setUrl(data)
       })
