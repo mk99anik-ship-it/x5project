@@ -174,14 +174,20 @@ button { cursor: pointer; }
 .trio article, .program-card, .panel, .stat-grid article { padding: 18px; }
 .steps ol, .phases { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .steps li, .phases li {
+  background: var(--paper);
+  border-radius: 20px;
+  padding: 16px;
+  min-width: 0;
+}
+.steps li {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 14px;
   align-items: start;
-  background: var(--paper);
-  border-radius: 20px;
-  padding: 16px;
 }
+.phases li h3,
+.phases li p { margin: 0; }
+.phases li h3 + p { margin-top: 8px; }
 .steps li span {
   font-family: var(--serif);
   font-size: 1.8rem;

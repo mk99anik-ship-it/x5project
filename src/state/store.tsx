@@ -3,6 +3,7 @@ import { SHOPS, shopLabel } from '../data/catalog'
 import { createSeed } from '../data/seed'
 import { applyTopUp, checkout, createBeneficiary, nextBeneficiaryId, type PayFailure, type PaySuccess } from '../lib/checkout'
 import { createToken, replaceLiveToken, RESERVED_CODES } from '../lib/token'
+import { loadStored, parseStored, STORAGE_KEY, writeStored } from './persist'
 import {
   CATEGORIES,
   isHardForbidden,
@@ -13,8 +14,6 @@ import {
   type StoreState,
   type TokenRecord,
 } from '../types'
-
-const KEY = 'tihaya-kassa-v1'
 
 function cryptoRandom(): number {
   const buf = new Uint32Array(1)
@@ -40,35 +39,11 @@ export function normalizeProgram(program: Program): Program {
   }
 }
 
-function parseState(raw: string): StoreState | null {
-  try {
-    const parsed = JSON.parse(raw) as { version?: number; state?: StoreState }
-    if (parsed.version !== 1 || !parsed.state?.programs || !parsed.state.beneficiaries) return null
-    return parsed.state
-  } catch {
-    return null
-  }
-}
-
-function readState(): StoreState | null {
-  try {
-    const raw = localStorage.getItem(KEY)
-    if (!raw) return null
-    return parseState(raw)
-  } catch {
-    return null
-  }
-}
-
-function writeState(state: StoreState) {
-  localStorage.setItem(KEY, JSON.stringify({ version: 1, state }))
-}
-
 function loadOrSeed(): StoreState {
-  const existing = readState()
+  const existing = loadStored()
   if (existing) return existing
   const fresh = createSeed(Date.now())
-  writeState(fresh)
+  writeStored(fresh)
   return fresh
 }
 
@@ -116,14 +91,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const commit = useCallback((next: StoreState) => {
     ref.current = next
-    writeState(next)
+    writeStored(next)
     setState(next)
   }, [])
 
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
-      if (event.key !== KEY || !event.newValue) return
-      const parsed = parseState(event.newValue)
+      if (event.key !== STORAGE_KEY || !event.newValue) return
+      const parsed = parseStored(event.newValue)
       if (!parsed) return
       ref.current = parsed
       setState(parsed)
