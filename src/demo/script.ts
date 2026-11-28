@@ -1,4 +1,4 @@
-export type ViewId = 'landing' | 'fund' | 'wallet' | 'pos' | 'reports' | 'volunteers'
+export type ViewId = 'landing' | 'fund' | 'wallet' | 'pos' | 'reports' | 'volunteers' | 'debug'
 
 export type DemoAction = 'issue' | 'planner' | 'basket' | 'pay'
 
@@ -61,6 +61,6 @@ export const DEMO_STEPS: DemoStep[] = [
     id: 'report',
     view: 'reports',
     title: 'Что видно в отчёте',
-    body: 'Фонд видит суммы, семьи и покупки, которые стоит проверить. Рядом есть страница для волонтёров.',
+    body: 'Фонд видит суммы и число семей. Рядом есть страница для волонтёров.',
   },
 ]

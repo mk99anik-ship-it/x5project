@@ -7,12 +7,19 @@ import { scrollBelowChrome } from './lib/scroll'
 import { useStore } from './state/store'
 import type { LineInput } from './types'
 import type { PaySuccess } from './lib/checkout'
+import { Debug } from './views/Debug'
 import { Volunteers } from './views/Volunteers'
 import { Fund } from './views/Fund'
 import { Landing } from './views/Landing'
 import { Pos } from './views/Pos'
 import { Reports } from './views/Reports'
 import { Wallet } from './views/Wallet'
+
+const DEBUG_HASH = '#/debug'
+
+function isDebugHash() {
+  return window.location.hash === DEBUG_HASH
+}
 
 const NAV: { id: ViewId; label: string }[] = [
   { id: 'landing', label: 'Как это работает' },
@@ -25,7 +32,7 @@ const NAV: { id: ViewId; label: string }[] = [
 
 export function App() {
   const { reset, issue, pay } = useStore()
-  const [view, setView] = useState<ViewId>('landing')
+  const [view, setView] = useState<ViewId>(() => (isDebugHash() ? 'debug' : 'landing'))
   const [demoIndex, setDemoIndex] = useState<number | null>(null)
   const [demoPerson, setDemoPerson] = useState<string | null>(null)
   const [walletId, setWalletId] = useState<string | null>(null)
@@ -37,6 +44,28 @@ export function App() {
   const [epoch, setEpoch] = useState(0)
   const seenStep = useRef(-1)
   const personRef = useRef<string | null>(null)
+
+  const show = (next: ViewId) => {
+    const onDebug = isDebugHash()
+    if (next === 'debug') {
+      if (!onDebug) history.pushState(null, '', DEBUG_HASH)
+    } else if (onDebug) {
+      history.pushState(null, '', `${window.location.pathname}${window.location.search}`)
+    }
+    setView(next)
+  }
+
+  useEffect(() => {
+    const sync = () => {
+      if (isDebugHash()) {
+        setView('debug')
+        return
+      }
+      setView((current) => (current === 'debug' ? 'landing' : current))
+    }
+    window.addEventListener('hashchange', sync)
+    return () => window.removeEventListener('hashchange', sync)
+  }, [])
 
   useEffect(() => {
     if (demoIndex !== null) return
@@ -116,7 +145,7 @@ export function App() {
     } else if (step.view === 'wallet' && personRef.current) {
       setWalletId(personRef.current)
     }
-    setView(step.view)
+    show(step.view)
     setDemoIndex(index)
   }
 
@@ -151,7 +180,7 @@ export function App() {
     setPosPreset(null)
     setDemoReceipt(null)
     setResetOpen(false)
-    setView('landing')
+    show('landing')
   }
 
   return (
@@ -161,7 +190,7 @@ export function App() {
       </a>
       <header className="top">
         <div className="top-row">
-          <button type="button" className="logo" onClick={() => setView('landing')}>
+          <button type="button" className="logo" onClick={() => show('landing')}>
             <span className="logo-mark" aria-hidden="true" />
             Тихая касса
           </button>
@@ -181,7 +210,7 @@ export function App() {
               type="button"
               className={view === item.id ? 'nav-btn on' : 'nav-btn'}
               aria-current={view === item.id ? 'page' : undefined}
-              onClick={() => setView(item.id)}
+              onClick={() => show(item.id)}
             >
               {item.label}
             </button>
@@ -189,20 +218,21 @@ export function App() {
         </nav>
       </header>
       <main id="content">
-        {view === 'landing' && <Landing onDemo={startDemo} onVolunteers={() => setView('volunteers')} />}
+        {view === 'landing' && <Landing onDemo={startDemo} onVolunteers={() => show('volunteers')} />}
         {view === 'fund' && (
           <Fund
             highlightId={demoPerson}
             onOpen={(id) => {
               setWalletId(id)
-              setView('wallet')
+              show('wallet')
             }}
           />
         )}
         {view === 'wallet' && <Wallet key={epoch} selectedId={walletId} onSelect={setWalletId} plannerSeed={plannerSeed} />}
         {view === 'pos' && <Pos key={epoch} presetNonce={posNonce} preset={posPreset} external={demoReceipt} />}
-        {view === 'reports' && <Reports onVolunteers={() => setView('volunteers')} />}
-        {view === 'volunteers' && <Volunteers onBack={() => setView('reports')} />}
+        {view === 'reports' && <Reports onVolunteers={() => show('volunteers')} />}
+        {view === 'volunteers' && <Volunteers onBack={() => show('reports')} />}
+        {view === 'debug' && <Debug />}
       </main>
       {demoIndex !== null && (
         <DemoBar

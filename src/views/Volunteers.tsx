@@ -6,8 +6,7 @@ import { useStore } from '../state/store'
 
 export function Volunteers({ onBack }: { onBack: () => void }) {
   const { state } = useStore()
-  const stats = monthStats(state)
-  const { report, budget } = stats
+  const { report, budget } = monthStats(state)
 
   return (
     <div className="page">
@@ -60,9 +59,7 @@ export function Volunteers({ onBack }: { onBack: () => void }) {
         <article className="panel">
           <h2>В каких магазинах покупали</h2>
           <Bars rows={report.byStore.map((item) => ({ label: item.name, value: item.gross }))} />
-          <p className="muted">
-            За месяц таких покупок: {stats.flags.length}. Имён в сводке нет.
-          </p>
+          <p className="muted">Номеров карт и имён в этой сводке нет.</p>
         </article>
       </section>
     </div>
