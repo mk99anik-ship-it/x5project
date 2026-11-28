@@ -64,20 +64,16 @@ export function ReceiptView({
         </div>
       </dl>
       <details className="judge">
-        <summary>Для проверки: как разделился чек</summary>
-        <p>Этого блока нет на экране кассира. Покупатель и очередь видят только баллы и доплату.</p>
+        <summary>Как разделился чек</summary>
         <ul>
           {lines.map((line, index) => (
             <li key={`${line.productId}-why-${index}`}>
-              {line.name}: {REASON[line.reason]}. Покрыто {formatRub(line.certGross)}, с лимита списано{' '}
-              {formatRub(line.certDebit)}, доплата {formatRub(line.cash)}.
+              {line.name}: {REASON[line.reason]}. Баллы {formatRub(line.certGross)}, с лимита {formatRub(line.certDebit)}, доплата{' '}
+              {formatRub(line.cash)}.
             </li>
           ))}
         </ul>
-        <p>
-          Итого с лимита сертификата: {formatRub(certDebit)}. На полке эти продукты стоят {formatRub(certGross)}: полезные
-          категории тратят лимит медленнее.
-        </p>
+        <p>С лимита списано {formatRub(certDebit)}.</p>
       </details>
     </article>
   )

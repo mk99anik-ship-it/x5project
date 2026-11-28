@@ -6,7 +6,7 @@ import { DEMO_STEPS, type ViewId } from './demo/script'
 import { useStore } from './state/store'
 import type { LineInput } from './types'
 import type { PaySuccess } from './lib/checkout'
-import { Donors } from './views/Donors'
+import { Volunteers } from './views/Volunteers'
 import { Fund } from './views/Fund'
 import { Landing } from './views/Landing'
 import { Pos } from './views/Pos'
@@ -19,7 +19,7 @@ const NAV: { id: ViewId; label: string }[] = [
   { id: 'wallet', label: 'Получатель' },
   { id: 'pos', label: 'Касса' },
   { id: 'reports', label: 'Отчёты' },
-  { id: 'donors', label: 'Донорам' },
+  { id: 'volunteers', label: 'Волонтёрам' },
 ]
 
 export function App() {
@@ -105,11 +105,21 @@ export function App() {
         К содержанию
       </a>
       <header className="top">
-        <button type="button" className="logo" onClick={() => setView('landing')}>
-          <span className="logo-mark" aria-hidden="true" />
-          Тихая касса
-        </button>
-        <nav className="nav" aria-label="Роль в демонстрации">
+        <div className="top-row">
+          <button type="button" className="logo" onClick={() => setView('landing')}>
+            <span className="logo-mark" aria-hidden="true" />
+            Тихая касса
+          </button>
+          <div className="top-actions">
+            <button type="button" className="btn btn-primary btn-small" onClick={startDemo}>
+              Сценарий
+            </button>
+            <button type="button" className="btn btn-ghost btn-small" onClick={() => setResetOpen(true)}>
+              Сброс
+            </button>
+          </div>
+        </div>
+        <nav className="nav" aria-label="Раздел">
           {NAV.map((item) => (
             <button
               key={item.id}
@@ -122,17 +132,9 @@ export function App() {
             </button>
           ))}
         </nav>
-        <div className="top-actions">
-          <button type="button" className="btn btn-primary btn-small" onClick={startDemo}>
-            Сценарий
-          </button>
-          <button type="button" className="btn btn-ghost btn-small" onClick={() => setResetOpen(true)}>
-            Сбросить демо
-          </button>
-        </div>
       </header>
       <main id="content">
-        {view === 'landing' && <Landing onDemo={startDemo} onDonors={() => setView('donors')} />}
+        {view === 'landing' && <Landing onDemo={startDemo} onVolunteers={() => setView('volunteers')} />}
         {view === 'fund' && (
           <Fund
             highlightId={demoPerson}
@@ -144,8 +146,8 @@ export function App() {
         )}
         {view === 'wallet' && <Wallet key={epoch} selectedId={walletId} onSelect={setWalletId} plannerSeed={plannerSeed} />}
         {view === 'pos' && <Pos key={epoch} presetNonce={posNonce} preset={posPreset} external={demoReceipt} />}
-        {view === 'reports' && <Reports onDonors={() => setView('donors')} />}
-        {view === 'donors' && <Donors onBack={() => setView('reports')} />}
+        {view === 'reports' && <Reports onVolunteers={() => setView('volunteers')} />}
+        {view === 'volunteers' && <Volunteers onBack={() => setView('reports')} />}
       </main>
       {demoIndex !== null && (
         <DemoBar
@@ -157,8 +159,8 @@ export function App() {
         />
       )}
       {resetOpen && (
-        <Modal title="Сбросить демо" onClose={() => setResetOpen(false)}>
-          <p>Вернутся исходные программы, сертификаты и история покупок. То, что вы выпустили и пробили в этой сессии, исчезнет.</p>
+        <Modal title="Сбросить данные" onClose={() => setResetOpen(false)}>
+          <p>Вернутся исходные карты и покупки. Новые пропадут.</p>
           <div className="row-actions">
             <button type="button" className="btn btn-ghost" onClick={() => setResetOpen(false)}>
               Отмена

@@ -91,25 +91,23 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
     <div className="page">
       <header className="page-head">
         <div>
-          <p className="kicker">Роль фонда</p>
-          <h1>Сертификаты и правила</h1>
+          <h1>Карты и правила</h1>
         </div>
       </header>
 
       <section className="budget">
         <div>
-          <p className="kicker">Бюджет доноров в этом месяце</p>
+          <p className="kicker">Бюджет фонда</p>
           <p className="budget-sum">{formatRub(stats.budget.pool)}</p>
           <p>
             Хватает на {stats.budget.familiesPossible}{' '}
-            {plural(stats.budget.familiesPossible, 'семью', 'семьи', 'семей')}. Сейчас действуют{' '}
-            {stats.activeCount} {plural(stats.activeCount, 'сертификат', 'сертификата', 'сертификатов')}, свободно ещё{' '}
+            {plural(stats.budget.familiesPossible, 'семью', 'семьи', 'семей')}. Карт сейчас {stats.activeCount}, свободно ещё{' '}
             {stats.budget.freeSlots}.
           </p>
         </div>
         <dl className="budget-side">
           <div>
-            <dt>Обязательства по лимитам</dt>
+            <dt>Лимиты карт</dt>
             <dd>{formatRub(stats.budget.committed)}</dd>
           </div>
           <div>
@@ -181,8 +179,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
 
       <section>
         <div className="section-head">
-          <h2>Сертификаты</h2>
-          <p className="muted">{state.beneficiaries.length} псевдонимов, без имён и телефонов</p>
+          <h2>Карты</h2>
         </div>
         <div className="issue-bar">
           <label>
@@ -196,12 +193,12 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
             </select>
           </label>
           <button type="button" className="btn btn-primary" onClick={issueCard}>
-            Выпустить сертификат
+            Выпустить карту
           </button>
         </div>
         {(note || highlightId) && (
           <p className="ok" role="status">
-            {note || `Выпущена карта ${highlightId}. Она уже в списке сверху — без имени и телефона.`}
+            {note || `Выпущена карта ${highlightId}.`}
           </p>
         )}
         <label className="search">
@@ -230,6 +227,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
                 freezeLabel={person.status === 'frozen' ? 'Разморозить' : 'Заморозить'}
                 onRevoke={() => setStatus(person.id, person.status === 'revoked' ? 'active' : 'revoked')}
                 revokeLabel={person.status === 'revoked' ? 'Восстановить' : 'Отозвать'}
+                revokeDanger={person.status !== 'revoked'}
               />
             )
           })}
@@ -297,8 +295,7 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
               </div>
             </fieldset>
             <fieldset>
-              <legend>Коэффициент полезных категорий</legend>
-              <p className="muted">Пусто или 1 — без бонуса. 1,3 значит, что 130 ₽ овощей списывают 100 ₽ лимита.</p>
+              <legend>Списание баллов</legend>
               <div className="form-row">
                 {BONUS.map((category) => (
                   <label key={category}>
@@ -438,6 +435,7 @@ function PersonCard({
   freezeLabel,
   onRevoke,
   revokeLabel,
+  revokeDanger,
 }: {
   id: string
   marked: boolean
@@ -451,6 +449,7 @@ function PersonCard({
   freezeLabel: string
   onRevoke: () => void
   revokeLabel: string
+  revokeDanger: boolean
 }) {
   return (
     <article id={`person-${id}`} className={marked ? 'person mark' : 'person'}>
@@ -474,7 +473,7 @@ function PersonCard({
         <button type="button" className="btn btn-ghost btn-small" onClick={onFreeze}>
           {freezeLabel}
         </button>
-        <button type="button" className="btn btn-ghost btn-small" onClick={onRevoke}>
+        <button type="button" className={revokeDanger ? 'btn btn-danger btn-small' : 'btn btn-ghost btn-small'} onClick={onRevoke}>
           {revokeLabel}
         </button>
       </div>

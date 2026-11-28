@@ -4,7 +4,7 @@ import { createToken, makeCode, normalizeCode, SELF_TTL_MS, TRUSTED_TTL_MS, vali
 describe('token', () => {
   const now = 1_700_000_000_000
 
-  it('нормализует код и принимает живой токен', () => {
+  it('нормализует код и принимает живой код', () => {
     const token = createToken({ beneficiaryId: 'ПК-1001', kind: 'self', now, code: 'TK-ABCD2345' })
     expect(token.expiresAt - token.issuedAt).toBe(SELF_TTL_MS)
     const result = validateToken('  tk-abcd2345 ', [token], now + 10_000)

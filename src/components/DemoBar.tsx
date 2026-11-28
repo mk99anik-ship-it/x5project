@@ -14,7 +14,7 @@ export function DemoBar({
   onClose: () => void
 }) {
   return (
-    <div className="demo-bar" role="region" aria-label="Сценарий для жюри">
+    <div className="demo-bar" role="region" aria-label="Сценарий">
       <div className="demo-bar-copy">
         <p className="kicker">
           {index + 1} из {total}

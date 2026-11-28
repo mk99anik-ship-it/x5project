@@ -32,7 +32,7 @@ function baseState(patch?: Partial<StoreState>): StoreState {
 }
 
 describe('checkout', () => {
-  it('делит чек, помечает токен использованным и уменьшает остаток', () => {
+  it('делит чек, помечает код использованным и уменьшает остаток', () => {
     const state = baseState()
     const result = checkout({
       state,
@@ -113,7 +113,7 @@ describe('checkout', () => {
     ).toMatchObject({ ok: false, error: 'expired_card' })
   })
 
-  it('отклоняет просроченный токен и пустую корзину', () => {
+  it('отклоняет просроченный код и пустую корзину', () => {
     const state = baseState()
     state.tokens[0].expiresAt = now - 1
     expect(

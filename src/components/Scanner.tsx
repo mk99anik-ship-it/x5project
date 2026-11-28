@@ -44,10 +44,10 @@ export function Scanner({ onCode, onClose }: { onCode: (value: string) => void; 
       <div id="qr-reader" className="qr-reader" />
       {failed && (
         <p className="warn" role="alert">
-          Камера недоступна. Введите код с карты вручную — для демо на одном устройстве этого достаточно.
+          Камера недоступна. Введите код вручную.
         </p>
       )}
-      {!failed && <p className="muted">Наведите камеру на код с телефона покупателя.</p>}
+      {!failed && <p className="muted">Наведите на код.</p>}
     </Modal>
   )
 }
