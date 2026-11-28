@@ -50,7 +50,7 @@ export function Donut({ parts }: { parts: { label: string; value: number }[] }) 
 
 export function Bars({ rows }: { rows: { label: string; value: number }[] }) {
   const max = Math.max(...rows.map((row) => row.value), 1)
-  if (rows.length === 0) return <p className="muted">Пока пусто.</p>
+  if (rows.length === 0) return <p className="muted">Пока нет данных.</p>
   return (
     <div className="bars">
       {rows.map((row) => (

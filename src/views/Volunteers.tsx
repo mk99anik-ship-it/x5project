@@ -30,7 +30,7 @@ export function Volunteers({ onBack }: { onBack: () => void }) {
           <strong>{formatRub(report.gross)}</strong>
         </article>
         <article>
-          <p>Полезная еда</p>
+          <p>Доля полезных продуктов</p>
           <strong>{formatShare(report.healthyShare)}</strong>
         </article>
         <article>
@@ -43,14 +43,14 @@ export function Volunteers({ onBack }: { onBack: () => void }) {
           <p className="kicker">Бюджет фонда</p>
           <p className="budget-sum">{formatRub(budget.pool)}</p>
           <p>
-            Хватает на {budget.familiesPossible} {plural(budget.familiesPossible, 'семью', 'семьи', 'семей')}. Карт сейчас{' '}
-            {budget.issued}. Свободных мест ещё {budget.freeSlots}: сюда можно подключить новые семьи.
+            Хватает на {budget.familiesPossible} {plural(budget.familiesPossible, 'семью', 'семьи', 'семей')}, карт сейчас{' '}
+            {budget.issued}, и свободных мест ещё {budget.freeSlots}, куда можно подключить новые семьи.
           </p>
         </div>
       </section>
       <section className="report-grid">
         <article className="panel">
-          <h2>Что брали</h2>
+          <h2>Какие продукты брали</h2>
           {report.byCategory.length === 0 ? (
             <p className="muted">В этом месяце покупок нет.</p>
           ) : (
@@ -58,9 +58,11 @@ export function Volunteers({ onBack }: { onBack: () => void }) {
           )}
         </article>
         <article className="panel">
-          <h2>Где покупали</h2>
+          <h2>В каких магазинах покупали</h2>
           <Bars rows={report.byStore.map((item) => ({ label: item.name, value: item.gross }))} />
-          <p className="muted">Странных покупок за месяц: {stats.flags.length}. Имён в сводке нет.</p>
+          <p className="muted">
+            Покупок, которые стоит проверить, за месяц {stats.flags.length}, и имён в сводке нет.
+          </p>
         </article>
       </section>
     </div>

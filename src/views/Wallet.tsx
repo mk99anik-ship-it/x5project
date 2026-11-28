@@ -14,9 +14,9 @@ const REASON: Record<LineReason, string> = {
   ok: 'баллами',
   forbidden: 'только за свои',
   not_allowed: 'не входит в карту',
-  cap: 'потолок категории',
+  cap: 'лимит категории',
   balance: 'не хватит баллов',
-  cap_balance: 'потолок и остаток',
+  cap_balance: 'лимит и остаток',
 }
 
 export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: string | null; onSelect: (id: string) => void; plannerSeed: number }) {
@@ -86,7 +86,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
     }
   }
 
-  if (!person || !program || !account) return <p className="page">Нет сертификатов. Выпустите карту в роли фонда.</p>
+  if (!person || !program || !account) return <p className="page">Карт пока нет, выпустите карту в разделе фонда.</p>
 
   const open = person.status === 'active' && person.validUntil >= clock
   const blocked = person.status === 'frozen' ? 'Карта временно заблокирована' : person.status === 'revoked' ? 'Карта аннулирована' : !open ? 'Срок карты закончился' : ''
@@ -95,7 +95,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
     <div className="page">
       <header className="page-head">
         <div>
-          <h1>Кошелёк</h1>
+          <h1>Карта получателя</h1>
         </div>
       </header>
       <div className="demo-pick">
@@ -163,14 +163,14 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                   <h2>Код для родственника</h2>
                   {trusted ? (
                     <>
-                      <QrView value={trusted.code} label="Код для доверенного лица" />
+                      <QrView value={trusted.code} label="Код для родственника" />
                       <div className="code-row">
                         <code>{trusted.code}</code>
                         <button type="button" className="btn btn-ghost btn-small" onClick={() => copy(trusted.code)}>
                           {copied === trusted.code ? 'Скопировано' : 'Скопировать'}
                         </button>
                       </div>
-                      <p className="muted">Одна покупка. Осталось {formatCountdown(trusted.expiresAt - clock)}.</p>
+                      <p className="muted">Код на одну покупку, осталось {formatCountdown(trusted.expiresAt - clock)}.</p>
                     </>
                   ) : (
                     <button type="button" className="btn btn-primary" onClick={() => issueTrusted(person.id)}>
@@ -262,10 +262,10 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
               </ul>
               {preview.lines.length > 0 && (
                 <div className={preview.cash > 0 ? 'warn' : 'ok'} role="status">
-                  Баллами покроется {formatRub(preview.certGross)}.
+                  Баллами покроется {formatRub(preview.certGross)}
                   {preview.cash > 0
-                    ? ` На кассе нужно доплатить ${formatRub(preview.cash)}.`
-                    : ' Доплачивать не нужно.'}
+                    ? `, а на кассе нужно доплатить ${formatRub(preview.cash)}.`
+                    : ', и доплачивать не нужно.'}
                 </div>
               )}
             </div>
@@ -286,7 +286,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
                       Баллами {formatRub(tx.certGross)}
                       {tx.certDebit !== tx.certGross ? ` · с лимита ${formatRub(tx.certDebit)}` : ''}
                       {tx.cash > 0 ? ` · доплата ${formatRub(tx.cash)}` : ''}
-                      {tx.via === 'trusted' ? ' · доверенное лицо' : ''}
+                      {tx.via === 'trusted' ? ' · код родственника' : ''}
                     </p>
                     <p className="muted">{tx.items.map((item) => item.name).join(', ')}</p>
                   </li>

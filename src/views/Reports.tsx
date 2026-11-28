@@ -77,7 +77,7 @@ export function Reports({ onVolunteers }: { onVolunteers: () => void }) {
       </div>
       <section className="stat-grid">
         <article>
-          <p>Продуктов по сертификату</p>
+          <p>Сумма продуктов по карте</p>
           <strong>{formatRub(report.gross)}</strong>
         </article>
         <article>
@@ -114,8 +114,8 @@ export function Reports({ onVolunteers }: { onVolunteers: () => void }) {
         </article>
       </section>
       <section className="panel">
-        <h2>Странные покупки</h2>
-        {flags.length === 0 && <p>Ничего необычного.</p>}
+        <h2>Покупки, которые стоит проверить</h2>
+        {flags.length === 0 && <p>Таких покупок нет.</p>}
         <ul className="flags">
           {flags.map((flag) => {
             const shop = SHOPS.find((item) => item.id === flag.storeId)
