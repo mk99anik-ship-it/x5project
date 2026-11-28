@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Modal } from '../components/Modal'
 import { accountOf } from '../lib/account'
 import { formatFullDate, formatRub } from '../lib/format'
+import { scrollBelowChrome } from '../lib/scroll'
 import { monthStats } from '../lib/selectors'
 import { formatMult, plural } from '../lib/text'
 import { useStore } from '../state/store'
@@ -54,7 +55,8 @@ export function Fund({ highlightId, onOpen }: { highlightId: string | null; onOp
 
   useEffect(() => {
     if (!highlightId) return
-    document.getElementById(`person-${highlightId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const timer = window.setTimeout(() => scrollBelowChrome(document.getElementById(`person-${highlightId}`)), 80)
+    return () => window.clearTimeout(timer)
   }, [highlightId])
 
   const people = useMemo(() => {
@@ -458,7 +460,7 @@ function PersonCard({
         <p className="muted">{programName}</p>
       </div>
       <p className={`badge badge-${status.tone}`}>{status.text}</p>
-      <p>
+      <p className="pair">
         <span className="muted">Остаток</span>
         <strong>{balanceLabel}</strong>
       </p>

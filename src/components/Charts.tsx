@@ -1,6 +1,6 @@
 import { formatRub } from '../lib/format'
 
-const COLORS = ['#1b6844', '#c4a15a', '#a24b32', '#3e6f8c', '#6d8a4e', '#7d5b78', '#b07a45', '#3f5e4a', '#5c6b73']
+const COLORS = ['#0F5A05', '#5FAF2D', '#FAA028', '#3C82FF', '#05310A', '#8237D2', '#FA6400', '#6ED2FA', '#6E50FF']
 
 export function Donut({ parts }: { parts: { label: string; value: number }[] }) {
   const total = parts.reduce((sum, part) => sum + part.value, 0)
@@ -12,7 +12,7 @@ export function Donut({ parts }: { parts: { label: string; value: number }[] }) 
   return (
     <div className="donut-wrap">
       <svg viewBox="0 0 140 140" className="donut" role="img" aria-label={label}>
-        <circle cx="70" cy="70" r={radius} fill="none" stroke="#efe6d8" strokeWidth="16" />
+        <circle cx="70" cy="70" r={radius} fill="none" stroke="#EAFBDC" strokeWidth="16" />
         {total > 0 &&
           parts.map((part, index) => {
             const length = (part.value / total) * circ
