@@ -4,12 +4,14 @@ export function DemoBar({
   step,
   index,
   total,
+  onBack,
   onNext,
   onClose,
 }: {
   step: DemoStep
   index: number
   total: number
+  onBack: () => void
   onNext: () => void
   onClose: () => void
 }) {
@@ -23,6 +25,9 @@ export function DemoBar({
         <p>{step.body}</p>
       </div>
       <div className="demo-bar-actions">
+        <button type="button" className="btn btn-ghost" onClick={onBack} disabled={index === 0}>
+          Назад
+        </button>
         <button type="button" className="btn btn-ghost" onClick={onClose}>
           Закрыть
         </button>

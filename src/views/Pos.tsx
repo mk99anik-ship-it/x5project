@@ -140,7 +140,7 @@ export function Pos({
             ))}
           </ul>
         </section>
-        <section className="basket-panel">
+        <section id="pos-basket" className="basket-panel">
           <h2>Чек · {formatRub(total)}</h2>
           {basket.length === 0 && <p className="muted">Добавьте товары.</p>}
           <ul className="pick-list">

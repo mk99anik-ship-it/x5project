@@ -157,7 +157,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
 
           {tab === 'card' && (
             <div>
-              <article className={blocked ? 'loyalty is-blocked' : 'loyalty'}>
+              <article id="wallet-card" className={blocked ? 'loyalty is-blocked' : 'loyalty'}>
                 <div className="loyalty-top">
                   <span>Карта покупателя</span>
                   <span className="loyalty-chip" aria-hidden="true" />
@@ -242,7 +242,7 @@ export function Wallet({ selectedId, onSelect, plannerSeed }: { selectedId: stri
           )}
 
           {tab === 'list' && preview && (
-            <div className="stack">
+            <div id="wallet-list" className="stack">
               <h2>Список покупок</h2>
               <label>
                 Добавить товар

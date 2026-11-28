@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DemoBar } from './components/DemoBar'
 import { Modal } from './components/Modal'
 import { demoLines } from './data/seed'
 import { DEMO_STEPS, type ViewId } from './demo/script'
+import { scrollBelowChrome } from './lib/scroll'
 import { useStore } from './state/store'
 import type { LineInput } from './types'
 import type { PaySuccess } from './lib/checkout'
@@ -34,59 +35,116 @@ export function App() {
   const [demoReceipt, setDemoReceipt] = useState<PaySuccess | null>(null)
   const [resetOpen, setResetOpen] = useState(false)
   const [epoch, setEpoch] = useState(0)
+  const seenStep = useRef(-1)
+  const personRef = useRef<string | null>(null)
 
   useEffect(() => {
+    if (demoIndex !== null) return
     window.scrollTo(0, 0)
-  }, [view])
+  }, [view, demoIndex])
 
   useEffect(() => {
     document.body.classList.toggle('demo-on', demoIndex !== null)
     return () => document.body.classList.remove('demo-on')
   }, [demoIndex])
 
+  useEffect(() => {
+    const header = document.querySelector('.top')
+    const apply = () => {
+      const headerH = header?.getBoundingClientRect().height ?? 0
+      const bar = document.querySelector('.demo-bar')
+      const barH = bar?.getBoundingClientRect().height ?? 0
+      document.documentElement.style.setProperty('--header-h', `${headerH}px`)
+      document.documentElement.style.setProperty('--demo-h', `${barH}px`)
+    }
+    apply()
+    const observer = new ResizeObserver(apply)
+    if (header) observer.observe(header)
+    const bar = document.querySelector('.demo-bar')
+    if (bar) observer.observe(bar)
+    window.addEventListener('resize', apply)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', apply)
+    }
+  }, [demoIndex])
+
+  useEffect(() => {
+    if (demoIndex === null) return
+    const step = DEMO_STEPS[demoIndex]
+    const timer = window.setTimeout(() => {
+      const target =
+        step.id === 'issue' && personRef.current
+          ? document.getElementById(`person-${personRef.current}`)
+          : step.id === 'wallet' || step.id === 'planner'
+            ? document.getElementById(step.id === 'planner' ? 'wallet-list' : 'wallet-card')
+            : step.id === 'pos' || step.id === 'pay'
+              ? document.getElementById('pos-basket')
+              : document.querySelector('main h1')
+      scrollBelowChrome(target)
+    }, 90)
+    return () => window.clearTimeout(timer)
+  }, [demoIndex, view])
+
+  const openStep = (index: number, run: boolean) => {
+    const step = DEMO_STEPS[index]
+    if (!step) {
+      setDemoIndex(null)
+      return
+    }
+    if (run && index > seenStep.current) {
+      if (step.action === 'issue') {
+        const person = issue('prog-family')
+        if (person) {
+          personRef.current = person.id
+          setDemoPerson(person.id)
+          setWalletId(person.id)
+        }
+      }
+      if ((step.id === 'wallet' || step.action === 'planner') && personRef.current) setWalletId(personRef.current)
+      if (step.action === 'planner') setPlannerSeed((value) => value + 1)
+      if (step.action === 'basket') {
+        setPosPreset(demoLines())
+        setPosNonce((value) => value + 1)
+        setDemoReceipt(null)
+      }
+      if (step.action === 'pay' && personRef.current) {
+        const code = ensureSelfToken(personRef.current)
+        if (code) {
+          const result = pay({ code, storeId: 's1', items: demoLines() })
+          if (result.ok) setDemoReceipt(result)
+        }
+      }
+      seenStep.current = index
+    } else if (step.view === 'wallet' && personRef.current) {
+      setWalletId(personRef.current)
+    }
+    setView(step.view)
+    setDemoIndex(index)
+  }
+
   const startDemo = () => {
-    setDemoIndex(0)
-    setView('landing')
+    seenStep.current = -1
+    personRef.current = null
+    setDemoPerson(null)
     setDemoReceipt(null)
+    openStep(0, true)
   }
 
   const nextDemo = () => {
     if (demoIndex === null) return
-    const upcoming = DEMO_STEPS[demoIndex + 1]
-    if (!upcoming) {
-      setDemoIndex(null)
-      return
-    }
-    if (upcoming.action === 'issue') {
-      const person = issue('prog-family')
-      if (person) {
-        setDemoPerson(person.id)
-        setWalletId(person.id)
-      }
-    }
-    if (upcoming.id === 'wallet' && demoPerson) setWalletId(demoPerson)
-    if (upcoming.action === 'planner') {
-      if (demoPerson) setWalletId(demoPerson)
-      setPlannerSeed((value) => value + 1)
-    }
-    if (upcoming.action === 'basket') {
-      setPosPreset(demoLines())
-      setPosNonce((value) => value + 1)
-      setDemoReceipt(null)
-    }
-    if (upcoming.action === 'pay' && demoPerson) {
-      const code = ensureSelfToken(demoPerson)
-      if (code) {
-        const result = pay({ code, storeId: 's1', items: demoLines() })
-        if (result.ok) setDemoReceipt(result)
-      }
-    }
-    setView(upcoming.view)
-    setDemoIndex(demoIndex + 1)
+    openStep(demoIndex + 1, true)
+  }
+
+  const backDemo = () => {
+    if (demoIndex === null || demoIndex === 0) return
+    openStep(demoIndex - 1, false)
   }
 
   const confirmReset = () => {
     reset()
+    seenStep.current = -1
+    personRef.current = null
     setEpoch((value) => value + 1)
     setDemoIndex(null)
     setDemoPerson(null)
@@ -154,6 +212,7 @@ export function App() {
           step={DEMO_STEPS[demoIndex]}
           index={demoIndex}
           total={DEMO_STEPS.length}
+          onBack={backDemo}
           onNext={nextDemo}
           onClose={() => setDemoIndex(null)}
         />

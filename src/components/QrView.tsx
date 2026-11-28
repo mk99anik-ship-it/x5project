@@ -10,7 +10,7 @@ export function QrView({ value, label }: { value: string; label: string }) {
       margin: 1,
       width: 320,
       errorCorrectionLevel: 'M',
-      color: { dark: '#143126', light: '#fffdf8' },
+      color: { dark: '#05310A', light: '#F7FBF2' },
     })
       .then((data) => {
         if (live) setUrl(data)
